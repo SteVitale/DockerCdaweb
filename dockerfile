@@ -29,7 +29,9 @@ ENV PATH "$PATH:/opt/cdapweb/jdk1.5.0_14/bin"
 
 
 #ESTRAZIONE TAR.GZ
-RUN tar xvf cdapwinst.tar.gz
+RUN gunzip cdapwinst.tar.gz
+RUN gunzip cdapwinst_update.tar.gz
+RUN tar xvzf cdapwinst.tar.gz
 RUN tar xvzf cdapwinst_update.tar.gz
 
 #ESPOSIZIONE PORTE
