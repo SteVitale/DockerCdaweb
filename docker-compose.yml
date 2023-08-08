@@ -1,0 +1,28 @@
+version: "3"
+services:
+  cdapdok:
+    image: cdapimage
+    user: root
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: cda-container
+    command: /script/entry.sh
+    volumes:
+      - VolumeTomcat:/opt/cdapweb:rw
+      - VolumeMysql:/var/lib/mysql:rw
+      - ./my.cnf:/etc/mysql/my.cnf:rw
+      - ./dump.sql:/dump.sql:rw
+      - ./mysql.conf:/etc/mysql/mysql.conf.d/mysql.conf:rw
+    environment:
+     - "MYSQL_ROOT_PASSWORD=anzettala"
+    restart: always
+    ports:
+      - "81:80"
+      - "8081:8080"
+      - "3307:3306"
+volumes:
+  VolumeMysql:
+   driver: local
+  VolumeTomcat:
+   driver: local

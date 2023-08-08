@@ -1,0 +1,11 @@
+version=1.23
+cdap_host=localhost
+cdap_port=3307
+cdap_db=cdap
+cdap_user=cdapweb
+cdap_password=cdapweb
+cdapadmin_user=cdapadmin
+cdapadmin_password=admin00
+cdaweb_server_port=65432
+
+

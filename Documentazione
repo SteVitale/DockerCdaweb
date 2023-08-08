@@ -1,0 +1,59 @@
+																											INSTALLAZIONE CDAWEB SU DOCKER
+		
+PROBLEMI RISOLTI:
+1) versione ubuntu: 18.04 versioni più recenti non supportano mysql 5.7
+2) matching porte 8080 -> 8081, 80 -> 81, 3306 -> 3307
+3) Cambio inidirizzi ip in localhost e porte con i nuovi matching
+   1) /opt/cdapweb/apache-tomcat-5.5.25/webapps/cdapweb/WEB-INF/strConf.props
+   2) /var/www/html/cdaplus/index-html
+   3) /etc/mysql/mysql.conf.d/mysqld.cnf
+   4) /etc/mysql/my.cnf
+   5) /etc/mysql/mysql.conf.d/mysql.conf
+4) path per java, per far funzionare il comando java -jar cdapwinst.jar update
+   -> ENV PATH "$PATH:/opt/cdapweb/jdk1.5.0_14/bin"
+5) Problema con associazione volumi in docker-compose.yml. Per dare al container tutti i permessi sul volume locale
+   bisogna solo dare il nome del volume (ex. VolumeTomcat) e docker lo inserirà nel suo path di default con tutti i permessi.
+   Per vedere lo stato del volume: docker volume "nome_volume" inspect
+
+
+
+
+
+PROBLEMI DA RISOLVERE:
+1) Nel file Script/entry.sh il comando per creare il link common non funziona in automatico, ma se si entra nel container il comando funziona correttamente.
+
+
+2) localhost:81/cdaplus/ si apre, ma se si clicca installa non trova nulla perchè questo percorso non esiste nel container: http://localhost:8081/cdapweb/cdawebservlet/CdawebServlet.jnlp (il percorso è     indicato nel file html nella cartella del docker locale File/index.html)
+3) java -jar cdapwinst.jar update produce il seguente errore:
+   Mysql   : aggiornamento alla versione 2 in corso...fallito
+   com.mysql.jdbc.exceptions.MySQLSyntaxErrorException: Invalid default value for 'end_time'
+ 
+
+
+
+
+SITUAZIONE ATTUALE:
+1) servizi mysql, tomcat, apach2 funzionanti (localhost:8081 e localhost:81)
+2) è possibile collegarsi in locale al database myqsl che gira dentro il container (cdap us: cdapweb ps: cdapweb port: 3307). Le query eseguite sono visibili sia su container sia in locale.
+3) localhost:8081/cdapadmin/ ha il database funzionante tranne la sezione menu_host
+
+
+
+
+
+COMANDI PER FAR PARTIRE IL CONTAINER
+1) spostarsi sulla cartella del file docker-compose.yml
+2) sudo docker pull ubuntu:18.04 e sudo docker-compose build 
+3) sudo docker-compose up -d
+4) sudo docker ps, prendere l'id ed entrare con sudo docker exec -it "id" /bin/bash
+5) creare il link common con il comando: ln -s /opt/cdapweb/apache-tomcat-5.5.25/shared/lib/common /opt/cdapweb/apache-tomcat-5.5.25/webapps/cdapadmin/common
+6) per importare il file dump.sql:
+	 1) spostarsi nella cartella iniziale (cd cd ..)
+   2) mysql -u root -p (password anzettala)
+   3) use cdap; source dump.sql; exit
+
+
+
+
+
+
